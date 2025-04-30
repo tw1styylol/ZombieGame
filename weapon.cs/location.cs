@@ -245,6 +245,74 @@ if (Name == "Військова база" && rand.Next(100) < 10)
             Console.WriteLine($"Ви знайшли {foundWeapon.Name} на військовій базі!");
         }
     }
+    if (HasZombies && rand.Next(100) < player.ZombieAttackProbability)
+    {
+        Console.WriteLine("Зомбі атакують вас!");
+        if (player.Inventory.Count() > 0)
+        {
+            Console.WriteLine("Ваш інвентар зброї:");
+            foreach (var weapon in player.Inventory)
+            {
+                Console.WriteLine($"{weapon.Name} - Захист: {weapon.DamageReduction}%");
+            }
 
+            Weapon chosenWeapon = player.Inventory.OrderByDescending(w => w.DamageReduction).First();
+            Console.WriteLine($"Ви використовуєте {chosenWeapon.Name} для відбиття атаки.");
+            int blockChance = rand.Next(1, 99);
+            Console.WriteLine($"Шанс на відбиття атаки: {chosenWeapon.DamageReduction}%");
+
+            if (blockChance < chosenWeapon.DamageReduction)
+            {
+                Console.WriteLine($"Атака відбита за допомогою {chosenWeapon.Name}!");
+                if (chosenWeapon.TryBreak())
+                {
+                    Console.WriteLine($"Ваша зброя {chosenWeapon.Name} поламалася!");
+                    player.Inventory.Remove(chosenWeapon);
+                }
+            }
+            else
+            {
+                int attackDamage = rand.Next(10, 30);
+                player.Health -= attackDamage;
+                Console.WriteLine($"Атака не відбита! Ви отримали {attackDamage} шкоди. Ваше здоров'я: {player.Health}%");
+                if (rand.Next(100) < player.InfectionChance)
+                {
+                    Console.WriteLine("Ви заразилися після атаки зомбі!");
+                    player.IsInfected = true;
+                }
+            }
+        }
+        else
+        {
+            int attackDamage = rand.Next(10, 30);
+            player.Health -= attackDamage;
+            Console.WriteLine($"У вас немає зброї! Ви отримали {attackDamage} шкоди. Ваше здоров'я: {player.Health}%");
+            if (rand.Next(100) < player.InfectionChance)
+            {
+                Console.WriteLine("Ви заразилися після атаки зомбі!");
+                player.IsInfected = true;
+            }
+        }
+
+        if (player.Health <= 0)
+        {
+            Console.WriteLine("Ви померли від нападу зомбі!");
+        }
+    }
+    else
+    {
+        Console.WriteLine("Локація безпечна.");
+        if (rand.Next(100) < player.FoodChance)
+        {
+            player.Food += 1;
+            Console.WriteLine("По дорозі до дому Ви знайшли їжу !");
+        }
+        if (rand.Next(100) < player.WaterChance)
+        {
+            player.Water += 1;
+            Console.WriteLine("По дорозі до дому Ви знайшли воду!");
+        }
+    }
 }
+
 
