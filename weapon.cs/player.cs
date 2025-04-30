@@ -211,5 +211,30 @@ class Player
             Game.daysSurvived++;
         }
     }
+    public void HandleInfection()
 
+    {
+        if (IsInfected)
+        {
+            if (IsInfected && Health >= 0)
+            {
+                Health -= 5;
+                Console.WriteLine($"Ви втратили 5 здоров'я через зараження! Ваше здоров'я: {Health}%");
+
+
+                if (HasAntidote)
+                {
+                    Console.WriteLine("Ви знайшли антидот у лабораторії і вилікувались від зараження!");
+                    IsInfected = false;
+                    HasAntidote = false;
+                }
+
+                if (Health <= 0)
+                {
+                    Console.WriteLine("Ви померли від зараження!");
+
+                }
+            }
+        }
+    }
 }
