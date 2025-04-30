@@ -77,5 +77,109 @@ class Location
             player.HasTransistor = true;
         }
 
+        if (Name == "Магазин" && rand.Next(100) < 45)
+        {
+            int foodAmount = rand.Next(1, 3);
+            int waterAmount = rand.Next(1, 2);
+            foodAmount += 1;
+            waterAmount += 1;
+            player.Food += foodAmount;
+            player.Water += waterAmount;
+            Console.WriteLine($"Ви знайшли {foodAmount} їжі та {waterAmount} води в магазині!");
+        }
+
+
+
+        if (Name == "Ферма")
+        {
+            int baseChance = 45;
+            int foodAmount = rand.Next(1, 3);
+            int waterAmount = rand.Next(1, 2);
+            if (player.Role == "Фермер")
+            {
+                baseChance += 15;
+                foodAmount += 1;
+                waterAmount += 1;
+            }
+
+            if (rand.Next(100) < baseChance)
+            {
+                player.Food += foodAmount;
+                player.Water += waterAmount;
+                Console.WriteLine($"Ви знайшли {foodAmount} їжі та {waterAmount} води на фермі!");
+                Console.WriteLine($"Запаси їжі: {player.Food}, запаси води: {player.Water}");
+            }
+
+        }
+
+
+        if (Name == "Лікарня" && player.Health < 100)
+        {
+            int baseChance = 15;
+            if (player.Role == "Медик")
+            {
+                baseChance = 50;
+            }
+
+            if (rand.Next(100) < baseChance)
+            {
+                int healthRecovered = rand.Next(10, 30);
+                int previousHealth = player.Health;
+
+                player.Health = Math.Min(100, player.Health + healthRecovered);
+                int actualRecovered = player.Health - previousHealth;
+
+                Console.WriteLine($"Ви знайшли ліки та відновили {actualRecovered}% здоров'я!");
+                Console.WriteLine($"Ваше здоров'я: {player.Health}%");
+            }
+
+        }
+
+
+
+        if (Name == "Радіостанція" && !player.EvacuationPointUnlocked &&
+            (!player.HasCable || !player.HasRelay ||
+              !player.HasResistor || !player.HasCapacitor || !player.HasChipPlate
+            || !player.HasScrew || !player.HasSpeeker || !player.HasTransistor))
+        {
+            Console.WriteLine("У вас недостатньо деталей, щоб запустити радіостанцію...");
+        }
+        else if (Name == "Радіостанція" && player.HasCable && player.HasRelay
+            && player.HasResistor && player.HasCapacitor && player.HasChipPlate
+            && player.HasScrew && player.HasSpeeker && player.HasTransistor)
+        {
+            Console.WriteLine("Ви відремонтували радіостанцію!");
+            player.RadiostationHasRepaired = true;
+        }
+
+        if (Name == "Радіостанція" && !player.EvacuationPointUnlocked && rand.Next(100) < 8 && player.RadiostationHasRepaired)
+        {
+            Console.WriteLine("Ви з надією перемикаєте частоти, у пошуку хочаб чогось...");
+            Console.WriteLine("Ви отримали сигнал про евакуацію! Пункт евакуації тепер доступний!");
+            player.EvacuationPointUnlocked = true;
+
+        }
+        else if (Name == "Радіостанція" && !player.EvacuationPointUnlocked && player.RadiostationHasRepaired)
+        {
+            Console.WriteLine("Ви з надією перемикаєте частоти у пошуку хочаб чогось...");
+            Console.WriteLine("Радіостанція мовчить. Цей шум лякає Вас більше, ніж смерть...");
+        }
+
+        if (Name == "Пункт евакуації" && player.Food >= 5 && player.Water >= 5)
+        {
+            Console.WriteLine("Ви з надією вирушили на координати пункту евакуації...");
+            Console.WriteLine($"Ви дісталися до пункту евакуації на {Game.daysSurvived += 3}-ий день! Ви врятовані!");
+            Environment.Exit(0);
+        }
+
+        if (Name == "Пункт евакуації" && player.Food < 5 && player.Water < 5)
+        {
+            Console.WriteLine("Ви з надією вирушили на координати пункту евакуації...");
+            Console.WriteLine("Вам не вистачило провіанту, щоб дістатись до пункту евакуації. Ви померли важкою смерттю...");
+            Environment.Exit(0);
+        }
+
+      
+
+        }
     }
-}
