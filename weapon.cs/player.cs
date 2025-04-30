@@ -111,4 +111,105 @@ class Player
             }
         }
     }
+
+
+    public void ZombieAttackWithWeapon()
+    {
+        int zombieAttackChance = ZombieAttackProbability;
+
+        if (zombieAttackChance > rand.Next(1, 100))
+        {
+            Console.WriteLine("Зомбі атакують вас!");
+
+
+            if (Inventory.Count() > 0)
+            {
+                Console.WriteLine("Ваш інвентар зброї:");
+                foreach (var weapon in Inventory)
+                {
+                    Console.WriteLine($"{weapon.Name} - Захист: {weapon.DamageReduction}%");
+                }
+
+                Weapon chosenWeapon = Inventory.OrderByDescending(w => w.DamageReduction).First();
+                Console.WriteLine($"Ви використовуєте {chosenWeapon.Name} для відбиття атаки.");
+
+                int blockChance = rand.Next(1, 99);
+                Console.WriteLine($"Шанс на відбиття атаки: {chosenWeapon.DamageReduction}%, випадкове число: {blockChance}");
+
+                if (blockChance < chosenWeapon.DamageReduction)
+                {
+                    Console.WriteLine($"Атака відбита за допомогою {chosenWeapon.Name}!");
+
+                    if (chosenWeapon.TryBreak())
+                    {
+                        Console.WriteLine($"Ваша зброя {chosenWeapon.Name} поламалася!");
+                        Inventory.Remove(chosenWeapon);
+                    }
+                }
+                else
+                {
+                    int attackDamage = rand.Next(10, 30);
+                    Health -= attackDamage;
+                    Console.WriteLine($"Атака не відбита! Ви отримали {attackDamage} шкоди. Ваше здоров'я: {Health}%");
+                }
+            }
+            else
+            {
+                int attackDamage = rand.Next(10, 30);
+                Health -= attackDamage;
+                Console.WriteLine($"У вас немає зброї! Ви отримали {attackDamage} шкоди. Ваше здоров'я: {Health}%");
+            }
+
+
+            if (Health <= 0)
+            {
+                Console.WriteLine("Ви померли від нападу зомбі!");
+            }
+        }
+    }
+
+
+
+    public void FindFlareGun()
+    {
+        if (!FlareGunUsed && rand.Next(100) < 3 && !HasFlareGun)
+        {
+            Inventory.Add(new FlareGun());
+            Console.WriteLine("Ви знайшли сигнальний пістолет!");
+            HasFlareGun = true;
+        }
+    }
+
+    public static int DaysAfterUseFlareGun = 0;
+    public void UpdateDays()
+    {
+        if (FlareGunUsed && Health > 0)
+        {
+            DaysAfterUseFlareGun++;
+            if (DaysAfterUseFlareGun >= 4)
+            {
+                Console.WriteLine("Вас знайшли рятівники, які побачили слід від сигнального пістолета! Ви врятовані!");
+                Environment.Exit(0);
+            }
+        }
+        else if (FlareGunUsed && Health <= 0)
+        {
+            Console.WriteLine("Ви померли в надії на порятунок...");
+        }
+    }
+
+
+    public void UseFlareGun()
+    {
+        if (HasFlareGun)
+        {
+            Inventory.Remove(Inventory.FirstOrDefault(item => item is FlareGun));
+            Console.WriteLine("Ви скористались сигнальним пістолетом, тим самим подали сигнал допомоги!");
+            HasFlareGun = false;
+            FlareGunUsed = true;
+            DaysAfterUseFlareGun = 0;
+            Game.daysSurvived++;
+        }
+    }
+
 }
