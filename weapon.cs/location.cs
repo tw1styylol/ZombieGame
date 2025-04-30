@@ -183,3 +183,68 @@ class Location
 
         }
     }
+
+if (Name == "Тюрма" && rand.Next(100) < 10)
+{
+    List<Weapon> weapons = new List<Weapon>
+            {
+                new Pistol(),
+                new Shotgun(),
+            };
+
+    Weapon foundWeapon = weapons[rand.Next(weapons.Count)];
+    if (player.Inventory.Any(w => w.Name == foundWeapon.Name))
+    {
+        Console.WriteLine($"Ви знайшли {foundWeapon.Name}, проте він у вас вже є!");
+    }
+    else
+    {
+        player.Inventory.Add(foundWeapon);
+        Console.WriteLine($"Ви знайшли {foundWeapon.Name} в тюрмі!");
+    }
+
+}
+
+
+
+if (Name == "Військова база" && rand.Next(100) < 10)
+{
+    List<Weapon> weapons = new List<Weapon>
+            {
+                new MeleeWeapon(),
+                new Pistol(),
+                new Rifle(),
+                new Shotgun(),
+                new FlareGun()
+            };
+
+    Weapon foundWeapon = weapons[rand.Next(weapons.Count)];
+
+    if (foundWeapon is FlareGun)
+    {
+        if (player.HasFlareGun)
+        {
+            Console.WriteLine("Ви знайшли сигнальний пістолет, але у вас він вже є!");
+        }
+        else
+        {
+            player.Inventory.Add(foundWeapon);
+            player.HasFlareGun = true;
+            Console.WriteLine("Ви знайшли сигнальний пістолет на військовій базі!");
+        }
+    }
+    else
+    {
+        if (player.Inventory.Any(w => w.Name == foundWeapon.Name))
+        {
+            Console.WriteLine($"Ви знайшли {foundWeapon.Name}, проте він у вас вже є!");
+        }
+        else
+        {
+            player.Inventory.Add(foundWeapon);
+            Console.WriteLine($"Ви знайшли {foundWeapon.Name} на військовій базі!");
+        }
+    }
+
+}
+
