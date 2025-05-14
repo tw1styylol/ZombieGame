@@ -27,7 +27,7 @@ class Pistol : Weapon
 {
     public Pistol()
     {
-        Nama = "Пістолет";
+        Name = "Пістолет";
         DamageReduction = 10;
     }
 }

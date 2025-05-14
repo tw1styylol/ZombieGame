@@ -77,6 +77,8 @@ class Location
             player.HasTransistor = true;
         }
 
+
+
         if (Name == "Магазин" && rand.Next(100) < 45)
         {
             int foodAmount = rand.Next(1, 3);
@@ -179,37 +181,32 @@ class Location
             Environment.Exit(0);
         }
 
-      
-
-        }
-    }
-
-if (Name == "Тюрма" && rand.Next(100) < 10)
-{
-    List<Weapon> weapons = new List<Weapon>
+        if (Name == "Тюрма" && rand.Next(100) < 10)
+        {
+            List<Weapon> weapons = new List<Weapon>
             {
                 new Pistol(),
                 new Shotgun(),
             };
 
-    Weapon foundWeapon = weapons[rand.Next(weapons.Count)];
-    if (player.Inventory.Any(w => w.Name == foundWeapon.Name))
-    {
-        Console.WriteLine($"Ви знайшли {foundWeapon.Name}, проте він у вас вже є!");
-    }
-    else
-    {
-        player.Inventory.Add(foundWeapon);
-        Console.WriteLine($"Ви знайшли {foundWeapon.Name} в тюрмі!");
-    }
+            Weapon foundWeapon = weapons[rand.Next(weapons.Count)];
+            if (player.Inventory.Any(w => w.Name == foundWeapon.Name))
+            {
+                Console.WriteLine($"Ви знайшли {foundWeapon.Name}, проте він у вас вже є!");
+            }
+            else
+            {
+                player.Inventory.Add(foundWeapon);
+                Console.WriteLine($"Ви знайшли {foundWeapon.Name} в тюрмі!");
+            }
 
-}
+        }
 
 
 
-if (Name == "Військова база" && rand.Next(100) < 10)
-{
-    List<Weapon> weapons = new List<Weapon>
+        if (Name == "Військова база" && rand.Next(100) < 10)
+        {
+            List<Weapon> weapons = new List<Weapon>
             {
                 new MeleeWeapon(),
                 new Pistol(),
@@ -218,101 +215,105 @@ if (Name == "Військова база" && rand.Next(100) < 10)
                 new FlareGun()
             };
 
-    Weapon foundWeapon = weapons[rand.Next(weapons.Count)];
+            Weapon foundWeapon = weapons[rand.Next(weapons.Count)];
 
-    if (foundWeapon is FlareGun)
-    {
-        if (player.HasFlareGun)
-        {
-            Console.WriteLine("Ви знайшли сигнальний пістолет, але у вас він вже є!");
-        }
-        else
-        {
-            player.Inventory.Add(foundWeapon);
-            player.HasFlareGun = true;
-            Console.WriteLine("Ви знайшли сигнальний пістолет на військовій базі!");
-        }
-    }
-    else
-    {
-        if (player.Inventory.Any(w => w.Name == foundWeapon.Name))
-        {
-            Console.WriteLine($"Ви знайшли {foundWeapon.Name}, проте він у вас вже є!");
-        }
-        else
-        {
-            player.Inventory.Add(foundWeapon);
-            Console.WriteLine($"Ви знайшли {foundWeapon.Name} на військовій базі!");
-        }
-    }
-    if (HasZombies && rand.Next(100) < player.ZombieAttackProbability)
-    {
-        Console.WriteLine("Зомбі атакують вас!");
-        if (player.Inventory.Count() > 0)
-        {
-            Console.WriteLine("Ваш інвентар зброї:");
-            foreach (var weapon in player.Inventory)
+            if (foundWeapon is FlareGun)
             {
-                Console.WriteLine($"{weapon.Name} - Захист: {weapon.DamageReduction}%");
+                if (player.HasFlareGun)
+                {
+                    Console.WriteLine("Ви знайшли сигнальний пістолет, але у вас він вже є!");
+                }
+                else
+                {
+                    player.Inventory.Add(foundWeapon);
+                    player.HasFlareGun = true;
+                    Console.WriteLine("Ви знайшли сигнальний пістолет на військовій базі!");
+                }
+            }
+            else
+            {
+                if (player.Inventory.Any(w => w.Name == foundWeapon.Name))
+                {
+                    Console.WriteLine($"Ви знайшли {foundWeapon.Name}, проте він у вас вже є!");
+                }
+                else
+                {
+                    player.Inventory.Add(foundWeapon);
+                    Console.WriteLine($"Ви знайшли {foundWeapon.Name} на військовій базі!");
+                }
             }
 
-            Weapon chosenWeapon = player.Inventory.OrderByDescending(w => w.DamageReduction).First();
-            Console.WriteLine($"Ви використовуєте {chosenWeapon.Name} для відбиття атаки.");
-            int blockChance = rand.Next(1, 99);
-            Console.WriteLine($"Шанс на відбиття атаки: {chosenWeapon.DamageReduction}%");
+        }
 
-            if (blockChance < chosenWeapon.DamageReduction)
+
+        if (HasZombies && rand.Next(100) < player.ZombieAttackProbability)
+        {
+            Console.WriteLine("Зомбі атакують вас!");
+            if (player.Inventory.Count() > 0)
             {
-                Console.WriteLine($"Атака відбита за допомогою {chosenWeapon.Name}!");
-                if (chosenWeapon.TryBreak())
+                Console.WriteLine("Ваш інвентар зброї:");
+                foreach (var weapon in player.Inventory)
                 {
-                    Console.WriteLine($"Ваша зброя {chosenWeapon.Name} поламалася!");
-                    player.Inventory.Remove(chosenWeapon);
+                    Console.WriteLine($"{weapon.Name} - Захист: {weapon.DamageReduction}%");
+                }
+
+                Weapon chosenWeapon = player.Inventory.OrderByDescending(w => w.DamageReduction).First();
+                Console.WriteLine($"Ви використовуєте {chosenWeapon.Name} для відбиття атаки.");
+                int blockChance = rand.Next(1, 99);
+                Console.WriteLine($"Шанс на відбиття атаки: {chosenWeapon.DamageReduction}%");
+
+                if (blockChance < chosenWeapon.DamageReduction)
+                {
+                    Console.WriteLine($"Атака відбита за допомогою {chosenWeapon.Name}!");
+                    if (chosenWeapon.TryBreak())
+                    {
+                        Console.WriteLine($"Ваша зброя {chosenWeapon.Name} поламалася!");
+                        player.Inventory.Remove(chosenWeapon);
+                    }
+                }
+                else
+                {
+                    int attackDamage = rand.Next(10, 30);
+                    player.Health -= attackDamage;
+                    Console.WriteLine($"Атака не відбита! Ви отримали {attackDamage} шкоди. Ваше здоров'я: {player.Health}%");
+                    if (rand.Next(100) < player.InfectionChance)
+                    {
+                        Console.WriteLine("Ви заразилися після атаки зомбі!");
+                        player.IsInfected = true;
+                    }
                 }
             }
             else
             {
                 int attackDamage = rand.Next(10, 30);
                 player.Health -= attackDamage;
-                Console.WriteLine($"Атака не відбита! Ви отримали {attackDamage} шкоди. Ваше здоров'я: {player.Health}%");
+                Console.WriteLine($"У вас немає зброї! Ви отримали {attackDamage} шкоди. Ваше здоров'я: {player.Health}%");
                 if (rand.Next(100) < player.InfectionChance)
                 {
                     Console.WriteLine("Ви заразилися після атаки зомбі!");
                     player.IsInfected = true;
                 }
             }
+
+            if (player.Health <= 0)
+            {
+                Console.WriteLine("Ви померли від нападу зомбі!");
+            }
         }
         else
         {
-            int attackDamage = rand.Next(10, 30);
-            player.Health -= attackDamage;
-            Console.WriteLine($"У вас немає зброї! Ви отримали {attackDamage} шкоди. Ваше здоров'я: {player.Health}%");
-            if (rand.Next(100) < player.InfectionChance)
+            Console.WriteLine("Локація безпечна.");
+            if (rand.Next(100) < player.FoodChance)
             {
-                Console.WriteLine("Ви заразилися після атаки зомбі!");
-                player.IsInfected = true;
+                player.Food += 1;
+                Console.WriteLine("По дорозі до дому Ви знайшли їжу !");
+            }
+            if (rand.Next(100) < player.WaterChance)
+            {
+                player.Water += 1;
+                Console.WriteLine("По дорозі до дому Ви знайшли воду!");
             }
         }
+    }
 
-        if (player.Health <= 0)
-        {
-            Console.WriteLine("Ви померли від нападу зомбі!");
-        }
-    }
-    else
-    {
-        Console.WriteLine("Локація безпечна.");
-        if (rand.Next(100) < player.FoodChance)
-        {
-            player.Food += 1;
-            Console.WriteLine("По дорозі до дому Ви знайшли їжу !");
-        }
-        if (rand.Next(100) < player.WaterChance)
-        {
-            player.Water += 1;
-            Console.WriteLine("По дорозі до дому Ви знайшли воду!");
-        }
-    }
 }
-
-
