@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
-class Player
+public class Player
 {
     private static Random rand = new Random();
     public bool IsInfected { get; set; } = false;
